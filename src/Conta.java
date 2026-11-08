@@ -1,52 +1,62 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public abstract class Conta implements IConta {
-	
-	private static final int AGENCIA_PADRAO = 1;
-	private static int SEQUENCIAL = 1;
+    private static final int AGENCIA_PADRAO = 1;
+    private static int sequencial = 1;
 
-	protected int agencia;
-	protected int numero;
-	protected double saldo;
-	protected Cliente cliente;
+    private final int agencia;
+    private final int numero;
+    private final Cliente cliente;
+    private BigDecimal saldo = new BigDecimal("0.00");
 
-	public Conta(Cliente cliente) {
-		this.agencia = Conta.AGENCIA_PADRAO;
-		this.numero = SEQUENCIAL++;
-		this.cliente = cliente;
-	}
+    protected Conta(Cliente cliente) {
+        if (cliente == null) throw new IllegalArgumentException("Cliente obrigatorio.");
+        this.agencia = AGENCIA_PADRAO;
+        this.numero = sequencial++;
+        this.cliente = cliente;
+    }
 
-	@Override
-	public void sacar(double valor) {
-		saldo -= valor;
-	}
+    private static BigDecimal validarValor(BigDecimal valor) {
+        if (valor == null || valor.signum() <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero.");
+        }
+        return valor.setScale(2, RoundingMode.UNNECESSARY);
+    }
 
-	@Override
-	public void depositar(double valor) {
-		saldo += valor;
-	}
+    @Override
+    public void sacar(BigDecimal valor) {
+        valor = validarValor(valor);
+        if (saldo.compareTo(valor) < 0) throw new IllegalStateException("Saldo insuficiente.");
+        saldo = saldo.subtract(valor);
+    }
 
-	@Override
-	public void transferir(double valor, IConta contaDestino) {
-		this.sacar(valor);
-		contaDestino.depositar(valor);
-	}
+    @Override
+    public void depositar(BigDecimal valor) {
+        saldo = saldo.add(validarValor(valor));
+    }
 
-	public int getAgencia() {
-		return agencia;
-	}
+    @Override
+    public void transferir(BigDecimal valor, IConta destino) {
+        valor = validarValor(valor);
+        if (destino == null || destino == this || !(destino instanceof Conta)) {
+            throw new IllegalArgumentException("Conta de destino invalida.");
+        }
+        if (saldo.compareTo(valor) < 0) throw new IllegalStateException("Saldo insuficiente.");
+        // Transferencia demonstrativa em memoria, sem suporte a concorrencia.
+        destino.depositar(valor);
+        saldo = saldo.subtract(valor);
+    }
 
-	public int getNumero() {
-		return numero;
-	}
+    public int getAgencia() { return agencia; }
+    public int getNumero() { return numero; }
+    public BigDecimal getSaldo() { return saldo; }
+    public Cliente getCliente() { return cliente; }
 
-	public double getSaldo() {
-		return saldo;
-	}
-
-	protected void imprimirInfosComuns() {
-		System.out.println(String.format("Titular: %s", this.cliente.getNome()));
-		System.out.println(String.format("Agencia: %d", this.agencia));
-		System.out.println(String.format("Numero: %d", this.numero));
-		System.out.println(String.format("Saldo: %.2f", this.saldo));
-	}
+    protected void imprimirInfosComuns() {
+        System.out.println("Titular: " + cliente.getNome());
+        System.out.println("Agencia: " + agencia);
+        System.out.println("Numero: " + numero);
+        System.out.println("Saldo: R$ " + saldo);
+    }
 }

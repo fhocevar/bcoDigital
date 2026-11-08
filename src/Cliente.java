@@ -1,14 +1,12 @@
-
 public class Cliente {
+    private final String nome;
 
-	private String nome;
+    public Cliente(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome do cliente obrigatorio.");
+        }
+        this.nome = nome.trim();
+    }
 
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
+    public String getNome() { return nome; }
 }

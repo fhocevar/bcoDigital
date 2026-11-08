@@ -1,18 +1,66 @@
-# Criando um Banco Digital com Java e Orientação a Objetos
+# Banco Digital com Java e POO — DIO
 
-## 02/08/2021 - [Mentoria #1: Tire Suas Dúvidas Sobre Orientação a Objetos](https://www.youtube.com/watch?v=YS6ouOhkyNI)
+Implementacao do desafio **Criando um Banco Digital com Java e Orientacao a Objetos**, baseada no projeto de referencia da DIO, com melhorias proprias.
 
-Desafio: Considerando nosso conhecimento no domínio bancário, iremos abstrair uma solução Orientada a Objetos em Java. Para isso, vamos interpretar o seguinte cenário:
-“Um banco oferece aos seus clientes dois tipos de contas (corrente e poupança), as quais possuem as funcionalidades de depósito, saque e transferência (entre contas da própria instituição).”
+## Requisitos atendidos
 
-### Abstração
-Habilidade de concentrar-se nos aspectos essenciais de um domínio, ignorando características menos importantes ou acidentais. Nesse contexto, objetos são abstrações de entidades existentes no domínio em questão.
+- Cliente e banco
+- Conta corrente e conta poupanca
+- Deposito, saque, transferencia e extrato
+- Abstracao (`IConta` e `Conta` abstrata)
+- Encapsulamento (atributos privados)
+- Heranca (`ContaCorrente` e `ContaPoupanca`)
+- Polimorfismo (implementacoes de `IConta`)
 
-### Encapsulamento
-Encapsular significa esconder a implementação dos objetos, criando assim interfaces de uso mais concisas e fáceis de usar/entender. O encapsulamento favorece principalmente dois aspectos de um sistema: a manutenção e a evolução.
+## Melhorias
 
-### Herança
-Permite que você defina uma classe filha que reutiliza (herda), estende ou modifica o comportamento de uma classe pai. A classe cujos membros são herdados é chamada de classe base. A classe que herda os membros da classe base é chamada de classe derivada.
+- `BigDecimal` para valores monetarios
+- Bloqueio de saldo insuficiente e de valores nao positivos
+- Validacao de cliente, destino de transferencia e duplicidade de contas
+- Colecao de contas somente leitura para consumidores
+- 16 verificacoes automatizadas sem dependencias externas
 
-### Polimorfismo
-Capacidade de um objeto poder ser referenciado de várias formas, ou seja, é capacidade de tratar objetos criados a partir das classes específicas como objetos de uma classe genérica. Cuidado, polimorfismo não quer dizer que o objeto fica se transformando, muito pelo contrário, um objeto nasce de um tipo e morre daquele tipo, o que pode mudar é a maneira como nos referimos a ele.
+## Estrutura
+
+```text
+banco-digital/
+├── src/
+│   ├── IConta.java
+│   ├── Cliente.java
+│   ├── Conta.java
+│   ├── ContaCorrente.java
+│   ├── ContaPoupanca.java
+│   ├── Banco.java
+│   └── Main.java
+├── tests/
+│   └── BancoDigitalTest.java
+├── .gitignore
+└── README.md
+```
+
+## Executar (PowerShell)
+
+```powershell
+New-Item -ItemType Directory -Force build
+javac -d build src/*.java tests/*.java
+java -cp build Main
+java -cp build BancoDigitalTest
+```
+
+Requer JDK 11 ou superior. O projeto usa classes no pacote padrao para facilitar a execucao.
+
+## Exemplo de saldo
+
+Deposito de R$ 1000,00, saque de R$ 200,00 e transferencia de R$ 300,00: conta corrente com R$ 500,00 e poupanca com R$ 300,00.
+
+## Limites
+
+Exemplo educacional em memoria, sem persistencia, autenticacao ou controle de concorrencia. Nao e um sistema bancario para producao.
+
+## Referencia
+
+Projeto de referencia fornecido no desafio: https://github.com/falvojr/dio-live-20210802
+
+## Autor
+
+Fernando Hocevar — https://github.com/fhocevar

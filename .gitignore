@@ -1,0 +1,19 @@
+*.class
+bin/
+build/
+target/
+out/
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+@"
+*.class
+bin/
+build/
+target/
+.vscode/
+.idea/
+*.log
+"@ | Set-Content .gitignore
